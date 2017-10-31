@@ -42,9 +42,19 @@ namespace CS408Client
             if (MessageBox.Show("Do you want to disconnect?", "Disconnect from server", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                 this.Close();
             client.Close();
+
+            // Add a new fresh client 
             client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+            // Enable buttons and textboxes
+            connectButton.Enabled = true;
+            portTextBox.Enabled = true;
+            usernameTextBox.Enabled = true;
+            ipTextBox.Enabled = true;
+
         }
 
+        // Connect button
         private void connectButton_Click(object sender, EventArgs e)
         {
             client.Connect(ipTextBox.Text, Convert.ToInt32(portTextBox.Text));
@@ -71,6 +81,8 @@ namespace CS408Client
                 {
                     //Add receive
                     logTextBox.Text = logTextBox.Text + "User connected. \n";
+
+                    // Disable buttons and textboxes
                     connectButton.Enabled = false;
                     portTextBox.Enabled = false;
                     usernameTextBox.Enabled = false;
@@ -83,6 +95,8 @@ namespace CS408Client
                 return;
             }
         }
+
+        // Function to receive list of players
         private void Receive()
         {
             bool connected = true;
@@ -111,11 +125,21 @@ namespace CS408Client
                     logTextBox.Text = logTextBox.Text + "Connection lost\n ";
                     connected = false;
                     client.Close();
+
+                    // Add a new fresh client 
+                    client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+                    // Enable buttons and textboxes
+                    connectButton.Enabled = true;
+                    portTextBox.Enabled = true;
+                    usernameTextBox.Enabled = true;
+                    ipTextBox.Enabled = true;
                 }
             }
         }
 
-        private void refreshButton_Click(object sender, EventArgs e)
+        // Retrieve list button
+        private void RefreshButton_Click(object sender, EventArgs e)
         {
             byte[] buffer = Encoding.Default.GetBytes("userlist");
             client.Send(buffer);
